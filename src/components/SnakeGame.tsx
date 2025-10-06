@@ -143,8 +143,6 @@ export const SnakeGame = () => {
             return newScore;
           });
           setFood(generateFood(newSnake));
-          // Increase speed slightly with each food
-          setSpeed(prev => Math.max(50, prev - 5));
           return newSnake;
         }
 
