@@ -14,10 +14,17 @@ const INITIAL_SPEED = 200;
 export const SnakeGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
-  const [food, setFood] = useState<Position>({ x: 15, y: 15 });
+  const [food, setFood] = useState<Position>(() => ({
+    x: Math.floor(Math.random() * GRID_SIZE),
+    y: Math.floor(Math.random() * GRID_SIZE),
+  }));
   const [direction, setDirection] = useState<Direction>(INITIAL_DIRECTION);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    const saved = localStorage.getItem('snakeHighScore');
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [gameStarted, setGameStarted] = useState(false);
   const [speed, setSpeed] = useState(INITIAL_SPEED);
   const directionRef = useRef<Direction>(INITIAL_DIRECTION);
@@ -35,7 +42,10 @@ export const SnakeGame = () => {
 
   const resetGame = () => {
     setSnake(INITIAL_SNAKE);
-    setFood({ x: 15, y: 15 });
+    setFood({
+      x: Math.floor(Math.random() * GRID_SIZE),
+      y: Math.floor(Math.random() * GRID_SIZE),
+    });
     setDirection(INITIAL_DIRECTION);
     directionRef.current = INITIAL_DIRECTION;
     setGameOver(false);
@@ -124,7 +134,14 @@ export const SnakeGame = () => {
 
         // Check food collision
         if (head.x === food.x && head.y === food.y) {
-          setScore(prev => prev + 10);
+          setScore(prev => {
+            const newScore = prev + 1;
+            if (newScore > highScore) {
+              setHighScore(newScore);
+              localStorage.setItem('snakeHighScore', newScore.toString());
+            }
+            return newScore;
+          });
           setFood(generateFood(newSnake));
           // Increase speed slightly with each food
           setSpeed(prev => Math.max(50, prev - 5));
@@ -226,7 +243,7 @@ export const SnakeGame = () => {
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">HIGH SCORE</p>
-              <p className="text-3xl font-bold text-secondary">{Math.max(score, 0)}</p>
+              <p className="text-3xl font-bold text-secondary">{highScore}</p>
             </div>
           </div>
 
