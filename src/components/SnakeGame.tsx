@@ -9,7 +9,7 @@ const GRID_SIZE = 20;
 const CELL_SIZE = 20;
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_DIRECTION: Direction = "RIGHT";
-const INITIAL_SPEED = 150;
+const INITIAL_SPEED = 200;
 
 export const SnakeGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
