@@ -147,12 +147,20 @@ export const SnakeGame = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Get computed CSS colors
+    const styles = getComputedStyle(document.documentElement);
+    const bgColor = `hsl(${styles.getPropertyValue('--game-bg').trim()})`;
+    const gridColor = `hsl(${styles.getPropertyValue('--grid-line').trim()})`;
+    const snakeBodyColor = `hsl(${styles.getPropertyValue('--snake-body').trim()})`;
+    const snakeGlowColor = `hsl(${styles.getPropertyValue('--snake-glow').trim()})`;
+    const foodColor = `hsl(${styles.getPropertyValue('--food').trim()})`;
+
     // Clear canvas
-    ctx.fillStyle = "hsl(var(--game-bg))";
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw grid
-    ctx.strokeStyle = "hsl(var(--grid-line))";
+    ctx.strokeStyle = gridColor;
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= GRID_SIZE; i++) {
       ctx.beginPath();
@@ -170,10 +178,10 @@ export const SnakeGame = () => {
     snake.forEach((segment, index) => {
       // Glow effect
       ctx.shadowBlur = 15;
-      ctx.shadowColor = "hsl(var(--snake-glow))";
+      ctx.shadowColor = snakeGlowColor;
       
       // Snake body
-      ctx.fillStyle = index === 0 ? "hsl(var(--snake-glow))" : "hsl(var(--snake-body))";
+      ctx.fillStyle = index === 0 ? snakeGlowColor : snakeBodyColor;
       ctx.fillRect(
         segment.x * CELL_SIZE + 1,
         segment.y * CELL_SIZE + 1,
@@ -186,8 +194,8 @@ export const SnakeGame = () => {
 
     // Draw food with pulsing glow
     ctx.shadowBlur = 20;
-    ctx.shadowColor = "hsl(var(--food))";
-    ctx.fillStyle = "hsl(var(--food))";
+    ctx.shadowColor = foodColor;
+    ctx.fillStyle = foodColor;
     ctx.beginPath();
     ctx.arc(
       food.x * CELL_SIZE + CELL_SIZE / 2,
